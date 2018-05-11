@@ -121,7 +121,7 @@
             2.vim /lib/systemd/system/docker.service
             ExecStart 检查有无 "$OPTIONS"
             
-            3.再在 /etc/sysconfig/docker 中修改 OPTIONS 变量,值为harbor仓库地址 "--insecure-registry 10.100.102.206"()：
+            3.再在 /etc/sysconfig/docker 中修改 OPTIONS 变量,值为harbor仓库地址 "--insecure-registry 10.100.102.206"：
             OPTIONS='--selinux-enabled --log-driver=journald --signature-verification=false --registry-mirror=http://035f55c7.m.daocloud.io --insecure-registry 10.100.102.206'
             
             4.重启docker
@@ -140,9 +140,4 @@
                 
                 3.docker push 10.100.102.206/common/centos
 
-    
-    
-    
-    
-    
     
