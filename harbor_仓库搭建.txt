@@ -1,0 +1,148 @@
+##centor7 下的harbor安装
+（参考 http://www.cnblogs.com/renhuangbili/p/8028414.html）
+
+
+# 环境准备
+    centos7 3.10.0-693.17.1.el7.x86_64
+    Python 2.7
+    Docker version 1.13.1, build 774336d/1.13.1
+    
+# docker服务
+    1.安装
+    yum -y install docker
+    yum -y install epel-release
+    yum -y install python-pip
+    
+    2.启动
+    systemctl start docker
+    systemctl enable docker
+    
+    3.修改配置
+    /etc/sysconfig/docker：
+        OPTIONS增加：
+            --registry-mirror=http://035f55c7.m.daocloud.io
+        systemctl restart docker
+
+# harbor下载、配置
+    1.https://github.com/vmware/harbor/releases  下载online压缩包
+      wget https://storage.googleapis.com/harbor-releases/release-1.5.0/harbor-online-installer-v1.5.0.tgz
+    2.tar zxvf harbor-online-installer-v1.5.0.tgz 解压压缩包
+    3.编辑 harbor/harbor.cfg harbor配置
+        hostname（hostname改成你自己虚拟机的Ip地址）
+        secretkey_path
+        ssl_cert
+        ssl_cert_key
+        db_password
+        harbor_admin_password
+        
+        参考https://github.com/vmware/harbor/blob/master/docs/installation_guide.md:
+        hostname:目标主机的主机名，用于访问UI和注册表服务。它应该是目标计算机的IP地址或完全限定域名（FQDN），例如192.168.1.10或reg.yourdomain.com。不要使用localhost或127.0.0.1用于主机名 - 注册表服务需要由外部客户端访问！
+        ui_url_protocol:（http或https。默认为http）用于访问UI和令牌/通知服务的协议。默认情况下，这是http。要设置https协议，请参阅使用HTTPS访问配置Harbor。
+        电子邮件设置:Harbor需要这些参数才能向用户发送“密码重置”电子邮件，并且只有在需要该功能时才需要。还有，千万注意，在默认情况下SSL连接是没有启用-如果你的SMTP服务器需要SSL，但不支持STARTTLS，那么你应该通过设置启用SSL email_ssl = TRUE。
+        email_server = smtp.mydomain.com
+        email_server_port = 25
+        email_username = sample_admin@mydomain.com
+        email_password = abc
+        email_from = admin \<sample_admin@mydomain.com\>
+        email_ssl = false
+        harbour_admin_password:管理员的初始密码。此密码仅在港口首次发布时生效。之后，将忽略此设置，并且应在UI中设置管理员的密码。请注意，默认用户名/密码为admin / Harbor12345。
+        auth_mode:使用的认证类型。默认情况下，它是db_auth，即凭据存储在数据库中。对于LDAP认证，请将其设置为ldap_auth。
+        ldap_url:LDAP端点URL（例如ldaps://ldap.mydomain.com）。 仅当auth_mode设置为ldap_auth时使用。
+        ldap_searchdn:具有搜索LDAP / AD服务器（例如uid=admin,ou=people,dc=mydomain,dc=com）的权限的用户的DN 。
+        ldap_search_pwd:由指定的用户的密码ldap_searchdn。
+        ldap_basedn:查找用户的基本DN，例如ou=people,dc=mydomain,dc=com。 仅当auth_mode设置为ldap_auth时使用。
+        ldap_filter:用于查找用户的搜索过滤器，例如(objectClass=person)。
+        ldap_uid:用于在LDAP搜索期间匹配用户的属性，可以是uid，cn，电子邮件或其他属性。
+        ldap_scope:用于搜索用户的范围，1-LDAP_SCOPE_BASE，2-LDAP_SCOPE_ONELEVEL，3-LDAP_SCOPE_SUBTREE。默认值为3。
+        db_password:用于db_auth的MySQL数据库的根密码。更改此密码以用于任何生产使用！
+        self_registration:（on或off。默认为on）启用/禁用用户注册自己的能力。禁用时，新用户只能由管理员用户创建，只有管理员用户才能在Harbor中创建新用户。 注意:当auth_mode设置为ldap_auth时，将始终禁用自注册功能，并且将忽略此标志。
+        use_compressed_js:（on或off。默认为on）对于生产使用，将此标志设置为on。在开发模式下，将其设置为off，以便可以单独修改js文件。
+        max_job_workers:（缺省值为3）作业服务中的最大复制worker数。对于每个图像复制作业，工作程序将存储库的所有标记同步到远程目标。增加此数量允许系统中更多的并发复制作业。但是，由于每个工人消耗一定量的网络/ CPU / IO资源，请根据主机的硬件资源仔细选择此属性的值。
+        token_expiration:令牌服务创建的令牌的过期时间（以分钟为单位），默认为30分钟。
+        verify_remote_cert:（on或off。默认为on）此标志确定当Harbor与远程注册表实例通信时是否验证SSL / TLS证书。将此属性设置为关闭将绕过SSL / TLS验证，这通常在远程实例具有自签名或不受信任的证书时使用。
+        customize_crt:（on或off。默认为on）当此属性打开时，prepare脚本创建用于生成/验证注册表令牌的私钥和根证书。以下属性:crt_country，crt_state，crt_location，crt_organization，crt_organizationalunit，crt_commonname，crt_email用作生成密钥的参数。当密钥和根证书由外部源提供时，将此属性设置为off。
+
+
+    4 编辑 vim common/templates/registry/config.yml repo配置
+
+# docker-compose
+    （https://blog.csdn.net/tornadojava/article/details/74974169 参考docker-compose安装部分）
+    yum -y install epel-release 
+    yum install python-pip 
+    
+    下载(https://github.com/docker/compose/releases/):
+    curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose
+    docker-compose --version
+
+# 安装harbor
+    cd /harbor
+    ./install.sh
+   
+# 使用harbor
+    参考 https://github.com/vmware/harbor/blob/master/docs/user_guide.md
+    
+    日志:/var/log/harbor/*
+    启动、停止:
+        cd ./harbor/
+        docker-compose dowm    #停止并清除容器所有信息 
+        docker-compose up -d   #创建并启动容器
+        docker-compose ps      #查看harbor运行状态
+        docker-compose start   #启动服务
+        docker-compose stop    #停止服务
+    UI:
+        http://10.100.102.206  admin/zhangyh666
+    
+    
+# 采坑记：
+    1.May 10 14:22:48 172.18.0.1 adminserver[2350]: 2018-05-10T06:22:48Z [INFO] the path of key used by key provider: /etc/adminserver/key
+      May 10 14:22:48 172.18.0.1 adminserver[2350]: 2018-05-10T06:22:48Z [FATAL] [main.go:46]: failed to initialize the system: read /etc/adminserver/key: is a directory
+      
+      原因：harbor.cfg中的secretkey_path和docker-compose.yml中的设置不一致
+      解决：
+        1.docker-compose down
+        2.rm -rf /mnt/data/*
+          rm -rf /data/
+          (/mnt/data/ 为 harbor.cfg 中 secretkey_path 值, /data/ 为 harbor.cfg 中 secretkey_path 默认值)
+        3.重新运行:
+            ./prepare
+            ./install.sh
+        4.docker-compose ps   所有必须都是 Up 状态
+        
+        
+    2.一个本地仓库推送image到harbor仓库(docker  login -u admin -p zhangyh666 10.100.102.206)提示：
+        Error response from daemon: Get https://10.100.102.206/v1/users/: dial tcp 10.100.102.206:443: getsockopt: connection refused
+        原因：本地仓库(docker)对于远程仓库(harbor)无法用443端口认证，只能走80端口的http认证，需要在本地仓库中添加信任(--insecure-registry)
+              注意：如果本地仓库有多个仓库需要信任，需要用多个--insecure-registry选项指定
+        解决：
+            1.vim /lib/systemd/system/docker.service：
+            EnvironmentFile=-/etc/sysconfig/docker
+            
+            2.vim /lib/systemd/system/docker.service
+            ExecStart 检查有无 "$OPTIONS"
+            
+            3.再在 /etc/sysconfig/docker 中修改 OPTIONS 变量,值为harbor仓库地址 "--insecure-registry 10.100.102.206"()：
+            OPTIONS='--selinux-enabled --log-driver=journald --signature-verification=false --registry-mirror=http://035f55c7.m.daocloud.io --insecure-registry 10.100.102.206'
+            
+            4.重启docker
+            systemctl daemon-reload
+            systemctl restart docker
+            
+            5.本地仓库执行：
+                1.docker login 10.100.102.206
+                输入用户名和密码
+                
+                2.docker tag old_tag docker.io/jdeathe/centos-ssh 10.100.102.206/common/centos
+                #其中：
+                    10.100.102.206 为远程仓库地址
+                    common  为harbor ui中的项目名称
+                    centos  为项目中的image名称
+                
+                3.docker push 10.100.102.206/common/centos
+
+    
+    
+    
+    
+    
+    
