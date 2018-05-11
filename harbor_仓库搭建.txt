@@ -133,11 +133,10 @@
                 输入用户名和密码
                 
                 2.docker tag old_tag docker.io/jdeathe/centos-ssh 10.100.102.206/common/centos
+
+                3.docker push 10.100.102.206/common/centos
                 #其中：
                     10.100.102.206 为远程仓库地址
                     common  为harbor ui中的项目名称
                     centos  为项目中的image名称
-                
-                3.docker push 10.100.102.206/common/centos
-
     
