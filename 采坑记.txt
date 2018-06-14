@@ -2,10 +2,11 @@
 
 
 # 坑一：docker run ..... source /etc/profile
-docker run -i -t -v /data/java/java1.7:/usr/local/java -v /data/apache-maven-3.3.9:/usr/local/maven -e local_path=/package -e env=DEV build-images-base2.0 source /etc/profile && python t.
+docker run -i -t -v /data/java/java1.7:/usr/local/java -v /data/apache-maven-3.3.9:/usr/local/maven -e local_path=/package -e env=DEV build-images-base2.0 source /etc/profile && python t.py
 docker: Error response from daemon: invalid header field value "oci runtime error: container_linux.go:247: starting container process caused \"exec: \\\"source\\\": executable file not found in $PATH\"\n".
 解决办法：
-    /bin/bash -c "source /usr/local/bin/virtualenvwrapper.sh; ls -ltr"
+    追加：/bin/bash -c "source /etc/profile; ls -ltr"
+    docker run -i -t -v /data/java/java1.7:/usr/local/java -v /data/apache-maven-3.3.9:/usr/local/maven -e local_path=/package -e env=DEV build-images-base2.0 /bin/bash -c "source /etc/profile; python t.py"
     参考：https://stackoverflow.com/questions/20635472/using-the-run-instruction-in-a-dockerfile-with-source-does-not-work
     
     
