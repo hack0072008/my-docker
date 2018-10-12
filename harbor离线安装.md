@@ -18,6 +18,14 @@
         yum install docker-ce-<VERSION STRING>
     2.d systemctl start docker
         systemctl stop docker
+    2.e 修改docker仓库目录：
+        touch /etc/docker/daemon.json 
+        cat /etc/docker/daemon.json:
+        {
+            "graph": "/data1/docker-data"
+        }
+        重启docker服务：
+        systemctl restart docker
     
 # 3.docker-compose安装(1.7.1+)
     3.a curl -L "https://github.com/docker/compose/releases/download/1.22.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
