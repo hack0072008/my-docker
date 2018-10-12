@@ -21,7 +21,7 @@
         chmod +x /usr/local/bin/docker-compose
         docker-compose --version
 
-# 3.harbor安装
+# 3.harbor安装(latest v1.5.3)
     1.a 在线安装
     1.b 离线安装
         --源码安装
