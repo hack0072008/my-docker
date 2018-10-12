@@ -3,20 +3,20 @@
 # 参考：
     https://www.cnblogs.com/guigujun/p/8352983.html
 
-## 获取项目信息
+### 获取项目信息
     curl -u "admin:Harbor12345" -X GET -H "Content-Type: application/json" "http://10.100.102.207/api/projects?project_name=camera"
 
-## 删除项目
+### 删除项目
     curl  -u "admin:Harbor12345"  -X DELETE  -H "Content-Type: application/json" "https://192.168.56.106/api/projects/{project_id}"
 
-## 创建项目
+### 创建项目
     curl -u "admin:Harbor12345" -X POST -H "Content-Type: application/json" "https://192.168.56.106/api/projects" -d @createproject.json
 
-## 删除项目成员
+### 删除项目成员
     curl -u "admin:Harbor12345" -X DELETE -H "Content-Type: application/json" "https://192.168.56.106/api/projects/{project_id}/members/{user_id}"
 
 
-## 查询用户
+#### 查询用户
     curl -u "admin:Harbor12345" -X GET -H "Content-Type: application/json" "http://10.100.102.207/api/users"
 
 ## 注册用户
