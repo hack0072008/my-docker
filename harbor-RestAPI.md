@@ -2,6 +2,11 @@
 
 # 参考：
     https://www.cnblogs.com/guigujun/p/8352983.html
+    
+# 官方：
+    https://raw.githubusercontent.com/goharbor/harbor/master/docs/swagger.yaml （在线解析：http://editor.swagger.io/
+）
+    
 
 #### 获取项目信息
     curl -u "admin:Harbor12345" -X GET -H "Content-Type: application/json" "http://10.100.102.207/api/projects?project_name=camera"
