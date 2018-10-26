@@ -21,6 +21,7 @@
     aws ecr describe-images --repository-name repo_name
 
 # 拉取镜像
+    #参考：https://docs.aws.amazon.com/zh_cn/AmazonECR/latest/userguide/docker-pull-ecr-image.html
     docker pull xxxx.dkr.ecr.cn-north-1.amazonaws.com.cn/repo_name:image-tag-name
 
 # 重命名镜像
