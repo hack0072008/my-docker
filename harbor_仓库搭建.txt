@@ -121,8 +121,8 @@
             2.vim /lib/systemd/system/docker.service
             ExecStart 检查有无 "$OPTIONS"
             
-            3.再在 /etc/sysconfig/docker 中修改 OPTIONS 变量,值为harbor仓库地址 "--insecure-registry 10.100.102.206"：
-            OPTIONS='--selinux-enabled --log-driver=journald --signature-verification=false --registry-mirror=http://035f55c7.m.daocloud.io --insecure-registry 10.100.102.206'
+            3.再在 /etc/sysconfig/docker 中修改 OPTIONS 变量,值为harbor仓库地址 "--insecure-registry 10.100.102.206:80"：
+            OPTIONS='--selinux-enabled --log-driver=journald --signature-verification=false --registry-mirror=http://035f55c7.m.daocloud.io --insecure-registry 10.100.102.206:80'
             
             4.重启docker
             systemctl daemon-reload
@@ -132,11 +132,11 @@
                 1.docker login 10.100.102.206
                 输入用户名和密码
                 
-                2.docker tag old_tag docker.io/jdeathe/centos-ssh 10.100.102.206/common/centos
+                2.docker tag old_tag docker.io/jdeathe/centos-ssh 10.100.102.206:80/common/centos:1.0
 
-                3.docker push 10.100.102.206/common/centos
+                3.docker push 10.100.102.206:80/common/centos:1.0
                 #其中：
-                    10.100.102.206 为远程仓库地址
+                    10.100.102.206:80 为远程仓库http地址
                     common  为harbor ui中的项目名称
                     centos  为项目中的image名称
     
